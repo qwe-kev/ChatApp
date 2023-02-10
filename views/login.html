@@ -49,12 +49,18 @@
               password : password
           })
 
-          console.log(res);
-        if(res.data.status === 1062) {
-            alert("incorrect details");
-        }
-        else if(res.data.status === 200) {
+        console.log("res", res);
+        if(res.data.status === 200) {
+            console.log(res.data.token);
             alert("Successfuly logged in");
+        }
+        else if(res.data.status === 401){
+            console.log("User not authorized");
+            alert("User not authorized");
+        }
+        else if(res.data.status === 404) {
+            console.log("User not found");
+            alert("User not found");
         }
     }
 

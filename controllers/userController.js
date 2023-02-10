@@ -11,6 +11,10 @@ const hashPassword = async function(password) {
     return await bcrypt.hash(password, saltRounds);
 }
 
+const generateToken = function(id, email) {
+    return jwt.sign({userId : id, email}, process.env.SECRET_KEY, {expiresIn : "24h"});
+}
+
 const checkUser = async function(password, hash) {
     return new Promise((resolve, reject) => {
         resolve(bcrypt.compare(password, hash));
@@ -60,9 +64,14 @@ module.exports.login = async (req, res, next) => {
             const response = await checkUser(req.body.password, user[0].dataValues.password);
             console.log("---user----", response);
             if(response) {
-                res.status(200).json({status : 200, message : "successfully logged in"})
-
+                res.status(200).json({status : 200, message : "successfully logged in", token : generateToken(user[0].dataValues.id, user[0].dataValues.email)})
             }
+            else {
+                res.status(401).json({status : 401, message : "User not authorized"});
+            }
+        }
+        else {
+            res.status(404).json({status : 404, message : "User not found"});
         }
     }
     catch(err) {
