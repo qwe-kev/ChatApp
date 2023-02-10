@@ -12,6 +12,12 @@ require('dotenv').config();
 
 const port = process.env.API_PORT || 3000;
 
+const cors = require('cors');
+
+app.use(cors({
+    origin : '*',
+}))
+
 app.use(express.urlencoded({extended : true}))
 
 app.use(express.json());

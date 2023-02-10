@@ -58,10 +58,10 @@
               password : password
           })
         if(res.data.status === 1062) {
-            document.querySelector(".message").textContent = "User already exists";
+            alert("User already exists, Please Login");
         }
         else if(res.data.status === 201) {
-            document.querySelector(".message").textContent = "Success";
+            alert("Successfuly signed up");
         }
     }
 
