@@ -30,7 +30,7 @@ app.use('/', (req, res, next) => {
     res.status(404).send("<h1>page not found</h1>")
 })
 
-sequelize.sync({force : true})
+sequelize.sync()
 .then(() => {
     app.listen(port, () => {
         console.log(`listening on port ${port}`)
