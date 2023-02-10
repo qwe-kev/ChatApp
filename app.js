@@ -4,7 +4,13 @@ const path = require('path');
 
 const app = express();
 
+const User = require('./models/user');
+
+const UserStatus = require('./models/userStatus');
+
 const userRoutes = require('./routes/userRoute');
+
+const chatRoutes = require('./routes/chatRoutes');
 
 const sequelize = require('./util/database');
 
@@ -26,9 +32,13 @@ app.use(express.static('public'));
 
 app.use('/users', userRoutes);
 
+app.use('/chats', chatRoutes);
+
 app.use('/', (req, res, next) => {
     res.status(404).send("<h1>page not found</h1>")
 })
+
+User.hasOne(UserStatus);
 
 sequelize.sync()
 .then(() => {
