@@ -2,6 +2,7 @@ const path = require('path');
 const rootDir = path.dirname(require.main.filename);
 const User = require('../models/user');
 const UserStatus = require('../models/userStatus');
+const Chat = require('../models/chats');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {v4 : uuidv4} = require('uuid');
@@ -20,7 +21,21 @@ module.exports.showActiveUsers = async(req, res, next) => {
         }],
          attributes : ['name'],
         });
-    console.log("---active users -----", activeUsers);
+   // console.log("---active users -----", activeUsers);
 
     res.status(200).json({status:200, activeUsers : activeUsers});
+}
+
+module.exports.newMessage = async(req, res, next) => {
+    try {
+        const message = req.body.message;
+        const response = await Chat.create({
+        message : message,
+        userId : req.user.userId
+        })
+        res.status(200).json({status : 200, message : 'successfully sent message'});
+    }catch(err) {
+        res.status(404).json({err})
+    }
+    
 }

@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', async(e) => {
         avatar.classList.add('text-center')
         avatar.src = user.userstatus.avatar;
         avatar.classList.add('avatar','rounded-circle');
-        avatar.style.width =  '3rem';
-        avatar.style.height = '3rem';
+        avatar.style.width =  '2rem';
+        avatar.style.height = '2rem';
         imageDiv.appendChild(avatar);
         const textDiv = document.createElement('div');
         textDiv.classList.add('flex-grow-1');
         const text = document.createElement('p');
-        text.classList.add('mb-0','text-muted');
+        text.classList.add('mb-0','text-dark');
         text.appendChild(document.createTextNode(`${user.name} joined`));
         textDiv.appendChild(text);
         div.appendChild(imageDiv);

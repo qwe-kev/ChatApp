@@ -6,6 +6,8 @@ const app = express();
 
 const User = require('./models/user');
 
+const Chat = require('./models/chats');
+
 const UserStatus = require('./models/userStatus');
 
 const userRoutes = require('./routes/userRoute');
@@ -39,6 +41,10 @@ app.use('/', (req, res, next) => {
 })
 
 User.hasOne(UserStatus);
+
+User.hasMany(Chat,  { onDelete: 'CASCADE', hooks: true });
+
+Chat.belongsTo(User);
 
 sequelize.sync()
 .then(() => {
