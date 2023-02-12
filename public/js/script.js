@@ -1,28 +1,52 @@
 async function getMessages() {
     const messageList = document.querySelector('.messageList');
     messageList.innerHTML = "";
+    const messages = JSON.parse(localStorage.getItem('chats'))
+    if(messages) {
+        messages.forEach(user => {
+            if(user.message.length > 0) {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item', 'list-group-item-secondary','pt-0');
+                const div = document.createElement('div');
+                div.classList.add('d-flex','align-items-center');
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('flex-grow-1');
+                const text = document.createElement('p');
+                text.classList.add('mb-0','text-dark');
+                text.appendChild(document.createTextNode(`${user.name} : ${user.message}`));
+                textDiv.appendChild(text);
+                div.appendChild(textDiv);
+                li.appendChild(div);
+                messageList.appendChild(li);
+            }
+           })
+    }
+    
+}
+
+async function polling() {
     const token = localStorage.getItem('token');
     const config = {
         headers: {"Authorization" : token}
     }
     const messages = await axios.get('http://localhost:3000/chats/getMessages', config);
-    messages.data.messages.forEach(user => {
-        if(user.message.length > 0) {
-            const li = document.createElement('li');
-            li.classList.add('list-group-item', 'list-group-item-secondary','pt-0');
-            const div = document.createElement('div');
-            div.classList.add('d-flex','align-items-center');
-            const textDiv = document.createElement('div');
-            textDiv.classList.add('flex-grow-1');
-            const text = document.createElement('p');
-            text.classList.add('mb-0','text-dark');
-            text.appendChild(document.createTextNode(`${user.name} : ${user.message}`));
-            textDiv.appendChild(text);
-            div.appendChild(textDiv);
-            li.appendChild(div);
-            messageList.appendChild(li);
+    if(localStorage.getItem('chats') == undefined) {
+        if(messages.data.messages.length > 10) {
+            localStorage.setItem('chats', JSON.stringify(messages.data.messages.slice(messages.data.messages.length - 10)));
         }
-       })
+        else {
+            localStorage.setItem('chats', JSON.stringify(messages.data.messages));
+        }
+    }
+    else{
+        if(messages.data.messages.length > 10) {
+            localStorage.setItem('chats', JSON.stringify(messages.data.messages.slice(messages.data.messages.length - 10)));
+        }
+        else {
+            localStorage.setItem('chats', JSON.stringify(messages.data.messages));
+        }
+    }
+    getMessages();
 }
 
 document.addEventListener('DOMContentLoaded', async(e) => {
@@ -59,7 +83,8 @@ document.addEventListener('DOMContentLoaded', async(e) => {
         li.appendChild(div);
         userList.appendChild(li);
     })
-   getMessages();
+
+   setInterval(polling, 1000);
 })
 
 async function newMessage(e) {
@@ -73,10 +98,9 @@ async function newMessage(e) {
         console.log("--response---", res);
     }
 
-    }
+}
+
 document.getElementById('my-form').addEventListener('submit', (e) => {
         e.preventDefault();
         newMessage();
-        window.location.reload();
-        getMessages();
 })
