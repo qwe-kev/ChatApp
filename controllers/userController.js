@@ -14,8 +14,8 @@ const hashPassword = async function(password) {
     return await bcrypt.hash(password, saltRounds);
 }
 
-const generateToken = function(id, email) {
-    return jwt.sign({userId : id, email}, process.env.SECRET_KEY, {expiresIn : "24h"});
+const generateToken = function(id,name, email) {
+    return jwt.sign({userId : id,name, email}, process.env.SECRET_KEY, {expiresIn : "24h"});
 }
 
 const checkUser = async function(password, hash) {
@@ -87,7 +87,7 @@ module.exports.login = async (req, res, next) => {
                 }
                
                 await updatedUser.save()
-                res.status(200).json({status : 200, message : "successfully logged in", token : generateToken(user[0].dataValues.id, user[0].dataValues.email)})
+                res.status(200).json({status : 200, message : "successfully logged in", token : generateToken(user[0].dataValues.id, user[0].dataValues.name, user[0].dataValues.email)})
             }
             else {
                 res.status(401).json({status : 401, message : "User not authorized"});

@@ -1,5 +1,33 @@
+async function getMessages() {
+    const messageList = document.querySelector('.messageList');
+    messageList.innerHTML = "";
+    const token = localStorage.getItem('token');
+    const config = {
+        headers: {"Authorization" : token}
+    }
+    const messages = await axios.get('http://localhost:3000/chats/getMessages', config);
+    messages.data.messages.forEach(user => {
+        if(user.message.length > 0) {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item', 'list-group-item-secondary','pt-0');
+            const div = document.createElement('div');
+            div.classList.add('d-flex','align-items-center');
+            const textDiv = document.createElement('div');
+            textDiv.classList.add('flex-grow-1');
+            const text = document.createElement('p');
+            text.classList.add('mb-0','text-dark');
+            text.appendChild(document.createTextNode(`${user.name} : ${user.message}`));
+            textDiv.appendChild(text);
+            div.appendChild(textDiv);
+            li.appendChild(div);
+            messageList.appendChild(li);
+        }
+       })
+}
+
 document.addEventListener('DOMContentLoaded', async(e) => {
     const userList = document.querySelector('.userList');
+    const messageList = document.querySelector('.messageList');
     const token = localStorage.getItem('token');
     const config = {
         headers: {"Authorization" : token}
@@ -31,5 +59,24 @@ document.addEventListener('DOMContentLoaded', async(e) => {
         li.appendChild(div);
         userList.appendChild(li);
     })
+   getMessages();
 })
 
+async function newMessage(e) {
+    const message = document.getElementById('btn-input').value;
+    if(message.length > 0) {
+        const token = localStorage.getItem('token');
+        const config =  {
+            headers: {"Authorization" : token}
+        }
+        const res = await axios.post('http://localhost:3000/chats/newMessage', {message : message}, config);
+        console.log("--response---", res);
+    }
+
+    }
+document.getElementById('my-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        newMessage();
+        window.location.reload();
+        getMessages();
+})

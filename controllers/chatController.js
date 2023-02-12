@@ -30,6 +30,7 @@ module.exports.newMessage = async(req, res, next) => {
     try {
         const message = req.body.message;
         const response = await Chat.create({
+        name : req.user.name,
         message : message,
         userId : req.user.userId
         })
@@ -38,4 +39,17 @@ module.exports.newMessage = async(req, res, next) => {
         res.status(404).json({err})
     }
     
+}
+
+module.exports.getMessages = async(req, res, next) => {
+    try{
+        const messages = await Chat.findAll({
+            attributes : ['name', 'message']
+        });
+        res.status(200).json({messages : messages})
+    }
+    catch(err) {
+        console.log(err);
+        res.status(404).json(err);
+    }
 }

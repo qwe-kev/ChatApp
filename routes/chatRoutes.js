@@ -8,6 +8,8 @@ router.get('/index.html', chatController.showHome);
 
 router.get('/activeUsers', verifyToken, chatController.showActiveUsers);
 
+router.get('/getMessages', verifyToken, chatController.getMessages);
+
 router.post('/newMessage', verifyToken, chatController.newMessage);
 
 module.exports = router;
