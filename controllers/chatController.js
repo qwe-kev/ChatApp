@@ -23,7 +23,7 @@ module.exports.showActiveUsers = async(req, res, next) => {
         });
    // console.log("---active users -----", activeUsers);
 
-    res.status(200).json({status:200, activeUsers : activeUsers});
+    res.status(200).json({status:200, activeUsers : activeUsers, currentUser : req.user.name});
 }
 
 module.exports.newMessage = async(req, res, next) => {
@@ -44,7 +44,7 @@ module.exports.newMessage = async(req, res, next) => {
 module.exports.getMessages = async(req, res, next) => {
     try{
         const messages = await Chat.findAll({
-            attributes : ['name', 'message']
+            attributes : ['name', 'message','createdAt']
         });
         res.status(200).json({messages : messages})
     }

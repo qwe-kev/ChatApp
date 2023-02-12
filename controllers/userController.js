@@ -80,7 +80,7 @@ module.exports.login = async (req, res, next) => {
                 let updatedUser = userRes[0];
                 updatedUser.status = true;
                 if(g == 'female') {
-                    updatedUser.avatar = 'https://bootdey.com/img/Content/avatar/avatar3.png';
+                    updatedUser.avatar = 'https://media.istockphoto.com/id/1331329483/sv/vektor/female-avatar-icon.jpg?s=612x612&w=0&k=20&c=57J_D_mQ3sDIK-BDVXRp7HAdqItnrju16TxkCfBDaaI=';
                 }
                 else {
                     updatedUser.avatar = 'https://bootdey.com/img/Content/avatar/avatar1.png';
