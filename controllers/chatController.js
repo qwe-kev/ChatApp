@@ -29,10 +29,12 @@ module.exports.showActiveUsers = async(req, res, next) => {
 module.exports.newMessage = async(req, res, next) => {
     try {
         const message = req.body.message;
+        const groupId = req.body.groupId;
         const response = await Chat.create({
         name : req.user.name,
         message : message,
-        userId : req.user.userId
+        userId : req.user.userId,
+        groupId : groupId
         })
         res.status(200).json({status : 200, message : 'successfully sent message'});
     }catch(err) {
@@ -44,7 +46,7 @@ module.exports.newMessage = async(req, res, next) => {
 module.exports.getMessages = async(req, res, next) => {
     try{
         const messages = await Chat.findAll({
-            attributes : ['name', 'message','createdAt']
+            attributes : ['name', 'message','createdAt', 'groupId', 'userId']
         });
         res.status(200).json({messages : messages})
     }

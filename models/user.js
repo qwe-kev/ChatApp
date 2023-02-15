@@ -28,4 +28,12 @@ const User = sequelize.define('user',{
     },
 });
 
+User.associate = function(models) {
+    User.belongsToMany(models.Group, {
+      through: 'UserGroup',
+      foreignKey: 'userId',
+      as: 'groups'
+    });
+  };
+
 module.exports = User;
