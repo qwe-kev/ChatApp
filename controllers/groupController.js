@@ -82,3 +82,18 @@ module.exports.getGroupMembers = async(req, res, next) => {
 
     }
 }
+
+module.exports.deleteUser = async(req, res, next) => {
+    try{
+        const userGroupId = req.body.groupUserId;
+        const user = await UserGroup.findByPk(userGroupId);
+        if(user.dataValues.isadmin === false) {
+            await user.destroy();
+            res.status(200).json({message : 'Successfully removed user'});
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.status(401).json({message : 'Oops!'});
+    }
+}

@@ -10,4 +10,6 @@ router.get('/getGroups', verifyToken, groupController.getGroups);
 
 router.get('/users/:groupId', verifyToken, groupController.getGroupMembers);
 
+router.post('/deleteUser', verifyToken, groupController.deleteUser);
+
 module.exports = router;

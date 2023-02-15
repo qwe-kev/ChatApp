@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async(e) => {
     })
     getGroups();
     polling();
-    setInterval(polling, 1000);
+    //setInterval(polling, 1000);
 })
 
 async function newMessage(e) {
@@ -167,7 +167,7 @@ async function newMessage(e) {
 
 async function newGroup(e) {
     const groupName = document.querySelector('#group-name').value;
-    console.log(groupName);
+    //console.log(groupName);
     var members = Array.from(document.getElementById("choices-multiple-remove-button").options).filter(option => option.selected).map(option => option.value);
 
     console.log(groupName, members);
@@ -209,12 +209,12 @@ document.getElementById('group-form').addEventListener('submit', (e) => {
 })
 
 document.getElementById('groupList').addEventListener('click', async (e) => {
+   // console.log(e.target);
     document.getElementById('groupTitle').textContent = `${e.target.textContent}`
     for (const li of document.querySelectorAll("li.active")) {
         li.classList.remove("active");
       }
     e.target.parentElement.parentElement.classList.add('active');
-    console.log(e.target.parentElement);
     const token = localStorage.getItem('token');
     const config =  {
         headers: {"Authorization" : token}
@@ -222,7 +222,11 @@ document.getElementById('groupList').addEventListener('click', async (e) => {
     const groupId = +e.target.parentElement.id;
     localStorage.setItem('currentGroup', JSON.stringify(groupId));
     const response = await axios.get(`http://localhost:3000/groups/users/${groupId}`, config);
-    console.log('---groupmembers---', response.data);
+    //console.log('---groupmembers---', response.data);
+    response.data.groupUsers.forEach(group => {
+        console.log(group.name, JSON.stringify(group.UserGroups[0]));
+        localStorage.setItem(group.name, JSON.stringify(group.UserGroups[0]));
+    })
     const activeMembers = document.querySelector('.chat-user');  
     activeMembers.innerHTML = '';     
     const groupUsers = response.data.groupUsers
@@ -236,4 +240,33 @@ document.getElementById('groupList').addEventListener('click', async (e) => {
     activeMembers.appendChild(li);
     })
    
+})
+
+document.querySelector('.chat-user').addEventListener('click', async(e) => {
+    if(e.target.classList.contains('pull-right')) {
+        const member = e.target.parentElement.children[1].textContent;
+        if(JSON.parse(localStorage.getItem(member)).isadmin === false) {
+            if(confirm(alert(`remove ${member} from group?`))){
+                const token = localStorage.getItem('token');
+                const config =  {
+                    headers: {"Authorization" : token}
+                }
+                const groupUserId = +JSON.parse(localStorage.getItem(member)).id;
+                const groupId = +JSON.parse(localStorage.getItem('currentGroup'));
+                const response = await axios.post('http://localhost:3000/groups/deleteUser', {groupId : groupId, member : member, groupUserId : groupUserId}, config);
+                console.log(response);
+                if(response.data.message === 'Successfully removed user') {
+                    alert('removed user');
+                }
+                else{
+                    alert('Oops, something happended');
+                }
+            }
+           
+        }
+        else{
+            alert('Sorry, only admins can remove users');
+        }
+       
+    };
 })
